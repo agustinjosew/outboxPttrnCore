@@ -25,3 +25,7 @@ El Outbox Pattern es útil en diversas situaciones, especialmente en aplicacione
 * Trazabilidad y seguimiento de eventos: Almacenar los mensajes del Outbox en una tabla de la base de datos permite rastrear las operaciones secundarias realizadas y tener un registro claro de los eventos procesados.
 
 El Outbox Pattern es una valiosa técnica para garantizar la consistencia y confiabilidad en sistemas distribuidos, especialmente cuando se necesitan realizar operaciones secundarias asincrónicas o no transaccionales. Al separar las operaciones secundarias de la operación principal y utilizar un proceso en segundo plano para llevar a cabo estas tareas, podemos mejorar la robustez y escalabilidad de nuestras aplicaciones.
+
+## Diagrama de implementación:
+![Outbox](https://github.com/agustinjosew/outboxPttrnCore/assets/76487325/68abf9b5-9d07-46d5-bd2b-00b12774613e)
+
