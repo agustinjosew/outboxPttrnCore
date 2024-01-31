@@ -29,3 +29,26 @@ El Outbox Pattern es una valiosa técnica para garantizar la consistencia y conf
 ## Diagrama de implementación:
 ![Outbox](https://github.com/agustinjosew/outboxPttrnCore/assets/76487325/68abf9b5-9d07-46d5-bd2b-00b12774613e)
 
+* **Cliente**: Representa el usuario o sistema que realiza una acción específica, en este caso, realiza una compra en la aplicación enviando una solicitud HTTP POST al API.
+
+* **API**: Web API que recibe la solicitud de compra del cliente. En esta etapa, el API valida los datos recibidos, realiza las comprobaciones necesarias y, si todo está correcto, registra una "orden de cobro" que indica que se debe procesar un pago pendiente. Además, guarda el evento relacionado con la compra en la base de datos.
+
+* **Base de datos**: Es la base de datos donde el API almacena tanto la orden de cobro como el evento relacionado con la compra. Es importante destacar que ambos registros se realizan en una sola transacción, lo que garantiza la consistencia y evita posibles problemas de integridad.
+Respuesta al Cliente: El API envía una respuesta HTTP exitosa (código de estado 2xx) al cliente para indicar que la compra ha sido recibida y que el pago está pendiente.
+
+* **Bucle del Procesamiento del Outbox**: Aquí comienza el proceso en segundo plano que se encarga de procesar los eventos pendientes, conocido como el Worker. Se inicia un bucle para revisar constantemente si existen mensajes en el "Outbox" (un registro en la base de datos que contiene eventos pendientes).
+
+* **Worker**: Representa el proceso en segundo plano que realiza el procesamiento de los mensajes pendientes del "Outbox". En este caso, busca los mensajes pendientes en la base de datos.
+Consulta de mensajes pendientes: El Worker consulta la base de datos para obtener los mensajes pendientes de procesar.
+
+* **Procesamiento del mensaje**: Una vez que el Worker obtiene un mensaje del "Outbox", procede a procesarlo. En este punto, el Worker puede interactuar con sistemas externos u otros servicios según sea necesario para completar la operación secundaria asociada al mensaje.
+
+* _**Nota sobre el Worker**: El Worker tiene la flexibilidad de interactuar con sistemas externos o realizar acciones adicionales según la naturaleza del evento. Esto permite que el procesamiento de eventos secundarios sea independiente y escalable._
+
+* **Actualización de la base de datos**: Después de procesar con éxito el mensaje, el Worker actualiza el estado del mensaje en la base de datos para indicar que ha sido procesado satisfactoriamente.
+
+* **Fin del bucle del Procesamiento del Outbox**: Una vez que el Worker ha procesado todos los mensajes pendientes en el "Outbox", finaliza el bucle y espera el próximo ciclo para verificar nuevamente si hay nuevos mensajes pendientes.
+
+El diagrama representa cómo funciona el patrón Outbox en una aplicación: 
+- Cuando un cliente realiza una acción que genera un evento secundario (como una compra), el evento se registra inicialmente en el "Outbox" de la base de datos, lo que garantiza la consistencia y durabilidad. 
+- Luego, un proceso en segundo plano (el Worker) se encarga de procesar los eventos pendientes, lo que permite realizar acciones secundarias de manera asíncrona y confiable sin afectar la operación principal. Esto mejora la escalabilidad y la confiabilidad del sistema, ya que el cliente recibe una respuesta inmediata mientras que las tareas adicionales se procesan de manera asincrónica y robusta.
